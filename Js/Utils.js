@@ -16,7 +16,10 @@ const keys = {
     d: { pressed: false },
     ArrowLeft: { pressed: false },
     ArrowRight: { pressed: false },
+
 }
+
+
 
 window.addEventListener('keydown', (event) => {
     switch (event.key) {
@@ -26,13 +29,7 @@ window.addEventListener('keydown', (event) => {
             }
             break
         case ' ':
-            player.isAttacking = true
-            if (rectangularCollision({ rectangle1: player, rectangle2: enemy })) {
-
-                enemy.health -= 10
-                console.log(enemy.health)
-            }
-
+            player.attack()
             break
         case 'a':
             keys.a.pressed = true
@@ -56,19 +53,17 @@ window.addEventListener('keydown', (event) => {
             }
             break
         case 'ArrowDown':
-            enemy.isAttacking = true
-            if (rectangularCollision({ rectangle1: enemy, rectangle2: player }))
-                player.health -= 10
-            console.log(player.health)
+            enemy.attack()
+            break
+
     }
-})
+}
+)
 
 window.addEventListener('keyup', (event) => {
     switch (event.key) {
 
-        case ' ':
-            player.isAttacking = false
-            break
+
         case 'a':
             keys.a.pressed = false
             break
@@ -80,9 +75,6 @@ window.addEventListener('keyup', (event) => {
             break
         case 'ArrowRight':
             keys.ArrowRight.pressed = false
-            break
-        case 'ArrowDown':
-            enemy.isAttacking = false
             break
     }
 

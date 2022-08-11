@@ -1,12 +1,16 @@
 // Player Class 
 class Fighter {
-    constructor({ position, velocity, color = 'red', attackBox, offset = 0 }) {
+    constructor({ position, velocity, color = 'red', offset = 0 }) {
         this.position = position
         this.velocity = velocity
         this.width = 50
         this.height = 150
         this.lastKey
-        this.attackBox = attackBox
+        this.attackBox = {
+            position: { x: this.position.x, y: this.position.y },
+            width: 100,
+            height: 50
+        }
         this.color = color
         this.offset = offset
         this.isAttacking = false
@@ -20,7 +24,7 @@ class Fighter {
         // draw out the attackBox
         if (this.isAttacking) {
             ctx.fillStyle = 'green'
-            ctx.fillRect(this.position.x - this.offset, this.position.y, this.attackBox.width, this.attackBox.height)
+            ctx.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height)
         }
     }
 
@@ -28,9 +32,8 @@ class Fighter {
     update() {
         // to draw our player on every render
         this.draw()
-
-
-
+        this.attackBox.position.x = this.position.x - this.offset
+        this.attackBox.position.y = this.position.y
         //movement
         this.position.y += this.velocity.y
         this.position.x += this.velocity.x
@@ -42,6 +45,16 @@ class Fighter {
             this.velocity.y += gravity
         }
 
+    }
+    attack() {
+        this.isAttacking = true
+        setTimeout(() => {
+            this.isAttacking = false
+        }, 100)
+    }
+
+    takeHit() {
+        this.health -= 10
     }
 }
 
