@@ -13,29 +13,73 @@ const enemy = new Fighter({
     offset: 50,
 })
 
-//rectangular collision 
+// platform 
+const platforms = [new Platform({
+    position: { x: 400, y: 500 },
+    width: 200,
+    height: 30
+}),
+new Platform({
+    position: { x: 600, y: 400 },
+    width: 200,
+    height: 30
+})
 
-function rectangularCollision({ rectangle1, rectangle2 }) {
-    return (
-        rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x &&
-        rectangle1.attackBox.position.x <= rectangle2.position.x + rectangle2.width &&
-        rectangle1.attackBox.position.y + rectangle1.attackBox.height >= rectangle2.position.y &&
-        rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height &&
-        rectangle1.isAttacking
-    )
-}
+]
+
+
+
+
+
 // animation loop
 function animate() {
 
+
+
+
     requestAnimationFrame(animate)
 
+
+    ctx.fillStyle = 'black'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    // update player 
+    player.update()
+
+    // draw platform
+    platforms.forEach(platform => platform.draw())
+
+    //platform collision 
+
+    platforms.forEach(platform => {
+
+        if (
+            player.position.y + player.height <= platform.position.y &&
+            player.position.x + player.width >= platform.position.x &&
+            player.position.x <= platform.position.x + platform.width && player.position.y + player.height + player.velocity.y >= platform.position.y
+
+        ) {
+            player.velocity.y = 0
+        }
+    }
+    )
     //Player movement 
     player.velocity.x = 0
 
-    if (keys.a.pressed && player.lastKey === 'a' && player.position.x >= 5) {
+    if (keys.a.pressed && player.lastKey === 'a' && player.position.x >= 100) {
         player.velocity.x = -5
-    } else if (keys.d.pressed && player.lastKey === 'd' && player.position.x + player.width <= canvas.width - 4) {
+    } else if (keys.d.pressed && player.lastKey === 'd' && player.position.x <= 400) {
         player.velocity.x = 5
+    } else {
+        if (keys.d.pressed) {
+            platforms.forEach(platform =>
+                platform.position.x -= 5
+            )
+        } else if (keys.a.pressed) {
+            platforms.forEach(platform =>
+                platform.position.x += 5
+            )
+        }
     }
 
     // enemy movement
@@ -58,10 +102,9 @@ function animate() {
     if (randomness * 10 >= 80 && enemy.position.x - player.position.x < 100) {
         if (randomness % 2 === 0 && player.velocity.x <= 2) {
 
-            enemy.attack()
+            enemy.shoot()
         }
     }
-
 
     if (randomness > 5) {
         enemy.velocity.x = -3
@@ -82,14 +125,13 @@ function animate() {
         }
     }
 
-    ctx.fillStyle = 'black'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // update player 
-    player.update()
+
+
+
 
     // update enemy
-    enemy.update()
+    // enemy.update()
 
     // detect for collision
     if (rectangularCollision({ rectangle1: player, rectangle2: enemy })) {
@@ -104,6 +146,11 @@ function animate() {
         enemy.isAttacking = false
         console.log(`player health: ${player.health}`)
     }
+
+
+
+
+
 
 }
 

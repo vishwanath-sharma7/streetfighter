@@ -16,20 +16,49 @@ const keys = {
     d: { pressed: false },
     ArrowLeft: { pressed: false },
     ArrowRight: { pressed: false },
-
 }
 
+
+//rectangular collision 
+
+function rectangularCollision({ rectangle1, rectangle2 }) {
+    return (
+        rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x &&
+        rectangle1.attackBox.position.x <= rectangle2.position.x + rectangle2.width &&
+        rectangle1.attackBox.position.y + rectangle1.attackBox.height >= rectangle2.position.y &&
+        rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height &&
+        rectangle1.isAttacking
+    )
+}
+
+
+// collision detection for platform 
+
+function platformCollision() {
+
+    platforms.forEach(platform =>
+    (
+        player.position.y + player.height <= platform.position.y &&
+        player.position.x + player.width >= platform.position.x &&
+        player.position.x <= platform.position.x + platform.width && player.position.y + player.height + player.velocity.y >= platform.position.y
+    )
+    )
+}
 
 
 window.addEventListener('keydown', (event) => {
     switch (event.key) {
         case 'w':
-            if (player.position.y + player.height >= canvas.height) {
-                player.velocity.y = -25
-            }
+            platforms.forEach(platform => {
+
+                if (player.position.y + player.height >= canvas.height || (player.position.y + player.height >= platform.position.y - 5 && player.position.x + player.width >= platform.position.x &&
+                    player.position.x <= platform.position.x + platform.width)) {
+                    player.velocity.y = -25
+                }
+            })
             break
         case ' ':
-            player.attack()
+            player.shoot()
             break
         case 'a':
             keys.a.pressed = true
@@ -53,7 +82,7 @@ window.addEventListener('keydown', (event) => {
             }
             break
         case 'ArrowDown':
-            enemy.attack()
+            enemy.shoot()
             break
 
     }
@@ -62,8 +91,6 @@ window.addEventListener('keydown', (event) => {
 
 window.addEventListener('keyup', (event) => {
     switch (event.key) {
-
-
         case 'a':
             keys.a.pressed = false
             break
