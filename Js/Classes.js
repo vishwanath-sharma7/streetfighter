@@ -1,21 +1,17 @@
 // Player Class 
 class Fighter {
-    constructor({ position, velocity, color = 'red', offset = 0 }) {
+    constructor({ position, velocity, color = 'red', offset = 0, attackBox }) {
         this.position = position
         this.velocity = velocity
         this.width = 50
         this.height = 150
         this.lastKey
-        this.attackBox = {
-            position: { x: this.position.x, y: this.position.y },
-            width: 100,
-            height: 50,
-            velocity: 20
-        }
+        this.attackBox = attackBox
         this.color = color
         this.offset = offset
         this.isAttacking = false
         this.health = 100
+        this.attackBox.position = { x: this.position.x, y: this.position.y }
     }
     draw() {
         // draw out the player
